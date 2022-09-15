@@ -73,3 +73,34 @@ def train(train_data_path = str, epoch = int, train_batch_size = int, model_save
   # model saving
   torch.save(model.state_dict(), model_save_path) # saves only the model parameters
   print('Finished Training')
+  
+ 
+
+def test(test_data_path=str, test_batch_size = int, model_save_path = str, test_max_length = int
+         ):
+   
+  model.load_state_dict(torch.load(model_save_path)) # loads only the model parameters
+  model.eval()
+
+  scd_test = Sent_Comp_Dataset(test_data_path)
+  test_dataloader = DataLoader(scd_test, batch_size=test_batch_size, shuffle=True, collate_fn=collate_batch, drop_last=False)
+
+  for batch_idx,(sentences,headlines) in enumerate(test_dataloader):  
+    
+    sent_ids = tokenizer.batch_encode_plus(sentences, max_length=test_max_length
+                                           , return_tensors="pt", pad_to_max_length=True) 
+
+    summaries = model.generate(
+      input_ids=sent_ids["input_ids"].to(device),
+      attention_mask=sent_ids["attention_mask"].to(device),
+      num_beams=4,
+      length_penalty=2.0,
+      max_length=142,  # +2 from original because we start at step=1 and stop before max_length
+      min_length=56,  # +1 from original because we start at step=1
+      no_repeat_ngram_size=3,
+      early_stopping=True,
+      do_sample=False,
+    )  # change these arguments if you want
+
+  dec = [tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in summaries]
+  print(dec)
