@@ -1,4 +1,4 @@
-# Bart_PhraphraseGenerator
+# Bart_PharaphraseGenerator
 # Based Bart model from huggingface https://huggingface.co/docs/transformers/model_doc/bart#bart
 
 # run on Colab
