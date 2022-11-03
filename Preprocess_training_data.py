@@ -47,3 +47,17 @@ print(df)
 data_save_path = "/content/gdrive/My Drive/sentence_compression/preprocessed_data/train01.json" 
 df.to_json(data_save_path, orient="index") 
 print('-- saved processed file as' + data_save_path)
+
+# merge
+files=['train01.json','train02.json','train03.json','train04.json','train05.json','train06.json','train07.json','train08.json','train09.json','train10.json']
+
+def merge_JsonFiles(filename):
+    result = list()
+    for f1 in filename:
+        with open(f1, 'r') as infile:
+            result.append(json.load(infile))
+
+    with open('train1-10.json', 'w') as output_file:
+        json.dump(result, output_file)
+
+merge_JsonFiles(files)
